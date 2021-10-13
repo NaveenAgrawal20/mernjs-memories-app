@@ -1,4 +1,4 @@
 node_modules
 build
-/client/.gitignore
 /server/.gitignore
+/client/.gitignore
