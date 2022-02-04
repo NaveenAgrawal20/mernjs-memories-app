@@ -6,6 +6,7 @@ import {
   CardMedia,
   Button,
   Typography,
+  ButtonBase
 } from "@material-ui/core";
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import ThumbUpAltOutlined from "@material-ui/icons/ThumbUpAltOutlined";
@@ -15,14 +16,17 @@ import useStyles from "./styles";
 import moment from "moment";
 import { useDispatch } from "react-redux";
 import { deletePost, likePost } from "../../../actions/posts";
+import {useHistory} from 'react-router-dom';
+
 
 const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem("profile"));
+  const history = useHistory();
 
   const Likes = () => {
-    if (post.likes.length > 0) {
+    if (post?.likes?.length > 0) {
       return post.likes.find(
         (likeId) => likeId === (user?.result?.googleId || user?.result?._id)
       ) ? (
@@ -51,14 +55,20 @@ const Post = ({ post, setCurrentId }) => {
   const handleDelete = async () => {
     dispatch(deletePost(post._id));
   };
-
+  const openPost = async() => {
+    history.push(`/posts/${post._id}`);
+  }
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} raised elevation={6}>
+    <ButtonBase
+      className={classes.cardAction}
+      onClick={openPost}
+    >
       <CardMedia
         className={classes.media}
         image={
           post.selectedFile ||
-          "https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png"
+          "/memories.png"
         }
         title={post.title}
       />
@@ -92,9 +102,10 @@ const Post = ({ post, setCurrentId }) => {
       </Typography>
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
-          {post.message}
+          {post.message.substring(0,120)+'...'}
         </Typography>
       </CardContent>
+      </ButtonBase>
       <CardActions className={classes.cardActions}>
         <Button
           size="small"
